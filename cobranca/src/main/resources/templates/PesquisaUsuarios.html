@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="LayoutPadrao">
+
+<head>
+<title>Pesquisa de Usuários</title>
+</head>
+
+<section layout:fragment="conteudo">
+		<div layout:include="MensagemGeralUsuario"></div>
+		
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<div class="clearfix">
+				<h1 class="panel-title mk-usuario-panel">Pesquisa de Usuarios</h1>
+				<a class="btn btn-link mk-link-panel"  th:href="@{/usuarios/novo}">Novo Usuário</a>
+			</div>
+		</div>
+
+		<div class="panel-body">
+
+			<form method="GET" class="form-horizontal" th:action="@{/usuarios}" th:object="${filtro}">
+
+				<div class="form-group">
+					<div class="col-sm-4">
+						<div class="input-group">
+							<input class="form-control"
+								placeholder="Qual Usuário você está procurando?"
+								autofocus="autofocus" th:field="*{nome}"></input>
+								<span class="input-group-btn">
+								<button type="submit" class="btn btn-default">
+									<i class="glyphicon glyphicon-search"></i>
+								</button>
+							</span>
+						</div>
+					</div>
+				</div>
+
+				<div class="table-responsive">
+				<table class="table table-bordered table-striped">
+					<thead>
+						<tr>
+
+							<th class="text-center col-md-1">#</th>
+							<th class="text-center col-md-1">NOME</th>
+							<th class="text-center col-md-2">SOBRENOME</th>
+							<th class="text-center col-md-2">CPF</th>
+							<th class="text-center col-md-2">Email</th>
+							<th class="text-center col-md-1">Status</th>
+							<th class="col-md-1"></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="usuario: ${usuarios}">
+							<td class="text-center" th:text="${usuario.codigo}">1</td>
+							<td class="text-center" th:text="${usuario.nome}"></td>
+							<td class="text-center" th:text="${usuario.sobrenome}"></td>
+							<td class="text-center" th:text="${usuario.email}"></td>
+							<td class="text-center" th:text="${usuario.cpf}"></td>
+							<td class="text-center" th:attr="data-role=${usuario.codigo}">
+							
+							<span class="label" th:text="${usuario.statususer}"
+							th:classappend="${usuario.inativo ? 'label-danger' : 'label-success'}"></span>
+							</td>
+
+
+
+							<td class="text-center"><a class="btn btn-link btn-xs"
+								th:href="@{/usuarios/{codigo}(codigo=${usuario.codigo})}"
+								title="Editar" rel="tooltip" data-placement="top">
+								<span class="glyphicon glyphicon-pencil"></span>
+									
+									
+							</a>
+							
+							<a class="btn btn-link btn-xs" data-toggle="modal"
+							data-target="#confirmacaoExclusaoUsuarioModal"
+							th:attr="data-codigo=${usuario.codigo}, data-descricao=${usuario.nome}"
+							title="Excluir" rel="tooltip" data-placement="top">
+							<span class="glyphicon glyphicon-trash"></span>
+							</a>
+							
+							<a class="btn btn-link btn-xs js-atualizarUser-status" th:if="${usuario.statususer}"
+							Title="Ativar" rel="tooltip" data-placement="top"
+							th:attr="data-codigo=${usuario.codigo}"
+							th:href="@{/usuarios/{codigo}/receber(codigo=${usuario.codigo})}">
+						
+							<span class="glyphicon glyphicon-check"></span>
+							
+							</a>
+							
+							</td>
+						</tr>
+						<tr>
+							<td colspan="6" th:if="${#lists.isEmpty(usuarios)}">Nenhum
+								Usuário foi encontrado</td>
+
+						</tr>
+					</tbody>
+				</table>
+				</div>
+			</form>
+		</div>
+   	<div layout:include="DialogoConfirmacaoExclusaoUsuario"></div>
+	</div>
+</section>
+</html>
